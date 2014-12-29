@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<root>
+    <tag name="root" class="net.sourceforge.carbine.SplitRoot"/>
+    <tag name="child" class="net.sourceforge.carbine.Child" parentMethod="addChild"/>
+    <tag name="alternate" class="net.sourceforge.carbine.Root" parentMethod="setAlternate"/>
+
+    <named name="namedChild1">
+        <child name="CHILD1"/>
+    </named>
+
+    <named name="namedChild2">
+        <child name="CHILD2"/>
+    </named>
+
+    <root attr1="VALUE1" attr2="VALUE2">
+        <named-ref name="namedChild1" parentMethod="setChild1"/>
+        <named-ref name="namedChild2" parentMethod="setChild2"/>
+
+        <alternate>
+            <named-ref name="namedChild1" parentMethod="addChild"/>
+            <child name="CHILD3"/>
+        </alternate>
+    </root>
+</root>
+

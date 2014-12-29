@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<root>
+    <tag name="root" class="net.sourceforge.carbine.BodyRoot" bodyMethod="setBody"/>
+
+    <root>BODY TEXT</root>
+</root>
+

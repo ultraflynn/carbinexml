@@ -1,0 +1,96 @@
+<project name="carbine" default="jar">
+    <target name="props">
+        <tstamp/>
+        <property file="build.properties"/>
+    </target>
+
+    <target name="dirs" depends="props">
+        <mkdir dir="${build.classes.main}"/>
+        <mkdir dir="${build.classes.test}"/>
+        <mkdir dir="${build.jars}"/>
+        <mkdir dir="${build.logs}"/>
+    </target>
+
+    <target name="copy" depends="dirs">
+        <copy toDir="${build.classes.main}">
+            <fileset dir="${src.classes.main}">
+                <include name="**/*.xml"/>
+                <include name="**/*.properties"/>
+            </fileset>
+        </copy>
+        <copy toDir="${build.classes.test}">
+            <fileset dir="${src.classes.test}">
+                <include name="**/*.xml"/>
+                <include name="**/*.properties"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="init" depends="copy">
+        <taskdef name="checkstyle" classname="com.puppycrawl.tools.checkstyle.CheckStyleTask">
+            <classpath location="${build.lib}/checkstyle-all-3.1.jar"/>
+        </taskdef>
+    </target>
+
+    <target name="style" depends="init">
+        <checkstyle config="checkstyle.xml">
+            <fileset dir="${src.classes.main}" includes="**/*.java" excludes="**/CVS/**"/>
+        </checkstyle>
+    </target>
+
+    <target name="compile" depends="style">
+        <javac srcdir="${src.classes.main}" destdir="${build.classes.main}" excludes="**/CVS/**" debug="true">
+            <classpath>
+                <pathelement location="${build.lib}/dom4j-full.jar"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="jar" depends="compile">
+        <jar jarfile="${build.jars}/${jar.file}" basedir="${build.classes.main}" compress="false"/>
+    </target>
+
+    <target name="style-test" depends="init">
+        <checkstyle config="checkstyle.xml">
+            <fileset dir="${src.classes.test}" includes="**/*.java" excludes="**/CVS/**"/>
+        </checkstyle>
+    </target>
+
+    <target name="compile-test" depends="jar,style-test">
+        <javac srcdir="${src.classes.test}" destdir="${build.classes.test}" excludes="**/CVS/**" debug="true">
+            <classpath>
+                <pathelement location="${build.classes.main}"/>
+                <pathelement location="${build.lib}/easymock.jar"/>
+                <pathelement location="${build.lib}/junit.jar"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="test" depends="compile-test">
+        <junit printsummary="yes" haltonfailure="yes" fork="yes">
+            <formatter type="plain"/>
+
+            <classpath>
+                <pathelement location="${build.classes.main}"/>
+                <pathelement location="${build.classes.test}"/>
+                <pathelement location="${build.lib}/easymock.jar"/>
+                <pathelement location="${build.lib}/dom4j-full.jar"/>
+            </classpath>
+
+            <batchtest todir="${build.logs}" fork="yes">
+                <fileset dir="${src.classes.test}">
+                    <include name="**/*Test*.java"/>
+                    <exclude name="**/CVS/**"/>
+                    <exclude name="**/log4j.properties"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="test-all" depends="test">
+    </target>
+
+    <target name="clean" depends="props">
+        <delete dir="${build.dir}"/>
+    </target>
+</project>

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<root>
+    <tag name="root" class="net.sourceforge.carbine.Root"/>
+    <tag name="child" class="net.sourceforge.carbine.BodyChild" parentMethod="addChild" bodyMethod="setBody"/>
+
+    <root>
+        <child>CHILD BODY</child>
+    </root>
+</root>
